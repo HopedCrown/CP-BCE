@@ -3,4 +3,4 @@
 typedef unsigned int uint;
 typedef const char cchar;
 typedef float flt;
-typedef int color;
+typedef uint64_t color;
