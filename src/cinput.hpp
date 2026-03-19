@@ -1,4 +1,5 @@
 #include <alias.h>
+#include <gint/display.h>
 
 // Colors
 #define C_WHITE 0xFFFFFF
@@ -17,10 +18,6 @@
 #define PICK_ITEM_H 50
 
 // THEMES
-/*
-an unsafe method for conversion to rgb to either rgb 565 or rgb 555
-*/
-private int[] C_RGB( int r, int g, int b);
 
 /*
 Safe method for conversion to rgb to either rgb 565 or rgb 555
