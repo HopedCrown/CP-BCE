@@ -3,7 +3,7 @@
 
 // Colors
 public color C_WHITE = 0xffff;
-public color C_DARK = C_DARK  = 0x528a;
+public color C_DARK = 0x528a;
 
 // SCREEN Dimensions and other base Constants
 
