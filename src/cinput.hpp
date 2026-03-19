@@ -2,7 +2,8 @@
 #include <gint/display.h>
 
 // Colors
-#define C_WHITE 0xFFFFFF
+public color C_WHITE = 0xffff;
+public color C_DARK = C_DARK  = 0x528a;
 
 // SCREEN Dimensions and other base Constants
 
@@ -24,7 +25,8 @@ Safe method for conversion to rgb to either rgb 565 or rgb 555
 */
 public inline int[] safe_rgb(int r,int  g,int  b){return C_RGB(r,g,b)};
 
-typedef struct THEME {
+// THEME  type for custom themes
+public typedef struct THEME {
   color modal_bg;
   color kbd_bg;
   color key_bg;
@@ -38,6 +40,16 @@ typedef struct THEME {
   color check;
 } THEME;
 
+/*
+struct of all supported themes (built-in)
+*/
+public typedef struct themes {
+  THEME light; 
+  THEME dark;
+  THEME grey;
+} themes;
+/*
+
 THEME light = {
   C_WHITE, 
   C_WHITE,
@@ -49,4 +61,6 @@ THEME light = {
   C_WHITE,
   safe_rgb(28, 29, 28),
   C_WHITE
-}; // I think this is how you make an  instance of a struct ?
+}; // I think this is how you make an  instance of a struct ? -> No it is not, but VERY close.
+
+*/
