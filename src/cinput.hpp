@@ -1,5 +1,6 @@
 #include <alias.h>
 #include <gint/display.h>
+#include <vector>
 
 // Colors
 public color C_WHITE = 0xffff;
@@ -490,7 +491,22 @@ public struct ITEM {
 class ListView {
 public:
   ListView(std::vector<int> rect, std::vector<ITEM> items, int row_h = 40, THEME theme = themes.light, int headers_h = NULL);
+  int x = rect[0];
+  int y = rect[1];
+  int w = rect[2];
+  int h = rect[3];
+
+  int base_row_h = row_h;
+  if (headers_h > 0) {
+    int header_h = headers_h;
+  } else {
+    int header_h = row_h;
+  }
+  THEME _theme = 
 private:
   std::vector<int> rect;
-
+  std::vector<ITEM> items;
+  int row_h;
+  THEME theme;
+  int headers_h;
 };
