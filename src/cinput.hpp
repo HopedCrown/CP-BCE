@@ -65,9 +65,32 @@ THEME light = {
 }; // I think this is how you make an  instance of a struct ? -> No it is not, but VERY close.
 
 */
+struct rect_t {
+    int x;
+    int y;
+    int w;
+    int h;
+};
 
-// LISTVIEW !!!!
-// List stuffs
+// Item (matches Python dict)
+struct L_ITEM {
+    const char* text;
+    const char* type; // "item" or "section"
+    int height;
+    int computed_height;
+    int computed_y;
+};
+
+class ListView {
+public:
+  ListView();
+private:
+  rect_t rect;
+  L_ITEM items;
+  int row_h = 40;
+  THEME theme = themes.light;
+  int headers_h = 0;
+}
 
 /*
 
@@ -482,79 +505,3 @@ class ListView:
 
 
 */
-class ListView {
-public:
-  struct L_ITEM {
-      const char* text;
-      const char* type;
-      int height;
-      int computed_height;
-      int computed_y;
-  };
-  typedef THEME Theme;
-    typedef L_ITEM Item;
-
-    ListView(
-        int x_pos,
-        int y_pos,
-        int width,
-        int height,
-        std::vector<Item>& item_list,
-        int row_height = 40,
-        const Theme* theme_value = 0,
-        int header_height = 0);
-
-    void recalc_layout();
-    void select_next(int start_idx, int step);
-
-    inline int item_count() const {
-        return items ? static_cast<int>(items->size()) : 0;
-    }
-
-    inline bool has_selection() const {
-        return selected_index >= 0;
-    }
-
-    static inline bool text_equals(const char* left, const char* right) {
-        if (left == right) {
-            return true;
-        }
-        if (!left || !right) {
-            return false;
-        }
-        while (*left && *right) {
-            if (*left != *right) {
-                return false;
-            }
-            ++left;
-            ++right;
-        }
-        return *left == *right;
-    }
-
-    int x;
-    int y;
-    int w;
-    int h;
-    int total_h;
-    int selected_index;
-    int scroll_y;
-    int max_scroll;
-    int base_row_h;
-    int headers_h;
-    int touch_start_y;
-    int touch_start_idx;
-    int touch_initial_item_idx;
-    int drag_threshold;
-    float touch_start_time;
-    float touch_acc_y;
-    float long_press_delay;
-    float snap_sensitivity;
-    std::vector<Item>* items;
-    const Theme* theme;
-    unsigned char is_dragging : 1;
-    unsigned char long_press_triggered : 1;
-
-private:
-    const Theme* resolve_theme(const Theme* theme_value) const;
-};
