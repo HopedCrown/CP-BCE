@@ -81,16 +81,150 @@ struct L_ITEM {
     int computed_y;
 };
 
+// ===========================================================|
+// ListView Class=============================================|
+// ===========================================================|
+
 class ListView {
 public:
-  ListView();
+    ListView(rect_t r,
+             const L_ITEM* input_items,
+             int item_count,
+             int row_h_ = 40,
+             const char* theme_name = "light",
+             int headers_h_ = 0)
+    {
+        rect = r;
+        row_h = row_h_;
+        headers_h = (headers_h_ > 0) ? headers_h_ : row_h_; // if headers_h_ > 0, then: headers_h = headers_h_ ; else: headers_h = row_h_
+
+        theme = _get_theme(theme_name);
+
+        // Allocate items
+        count = item_count;
+        items = new L_ITEM[count];
+
+        // Copy + normalize
+        for (int i = 0; i < count; i++) {
+            items[i] = input_items[i];
+
+            if (items[i].type == nullptr) {
+                items[i].type = "item";
+            }
+        }
+
+        // Layout
+        total_h = 0;
+        recalc_layout();
+
+        // Selection & Scroll
+        selected_index = -1;
+        scroll_y = 0.0f;
+
+        float diff = (float)(total_h - rect.h);
+        max_scroll = (diff > 0.0f) ? diff : 0.0f;
+
+        select_next(0, 1);
+
+        // Touch State
+        is_dragging = false;
+        touch_start_y = 0;
+        touch_start_idx = 0;
+        touch_start_time = 0;
+        touch_acc_y = 0.0f;
+        touch_initial_item_idx = -1;
+        long_press_triggered = false;
+
+        // Config
+        drag_threshold = 10.0f;
+        long_press_delay = 0.5f;
+        snap_sensitivity = 1.0f;
+    }
+
+    // Destructor (prevents memory leak)
+    ~ListView() {
+        delete[] items;
+    }
+
 private:
-  rect_t rect;
-  L_ITEM items;
-  int row_h = 40;
-  THEME theme = themes.light;
-  int headers_h = 0;
-}
+    rect_t rect;
+
+    L_ITEM* items;
+    int count;
+
+    int row_h;
+    int headers_h;
+    THEME theme;
+
+    int total_h;
+
+    int selected_index;
+    float scroll_y;
+    float max_scroll;
+
+    bool is_dragging;
+    float touch_start_y;
+    int touch_start_idx;
+    float touch_start_time;
+    float touch_acc_y;
+    int touch_initial_item_idx;
+    bool long_press_triggered;
+
+    float drag_threshold;
+    float long_press_delay;
+    float snap_sensitivity;
+
+    // =====================
+    // Inline Theme Getter
+    // =====================
+    inline THEME _get_theme(const char* name) {
+        if (!name || strcmp(name, "light") == 0) return themes.light;
+        if (strcmp(name, "dark") == 0) return themes.dark;
+        if (strcmp(name, "grey") == 0) return themes.grey;
+        return themes.light;
+    }
+
+    // =====================
+    // Layout Calculation
+    // =====================
+    void recalc_layout() {
+        int y_offset = 0;
+
+        for (int i = 0; i < count; i++) {
+            int h;
+
+            if (items[i].height > 0) {
+                h = items[i].height;
+            } else if (strcmp(items[i].type, "section") == 0) {
+                h = headers_h;
+            } else {
+                h = row_h;
+            }
+
+            items[i].computed_height = h;
+            items[i].computed_y = y_offset;
+
+            y_offset += h;
+        }
+
+        total_h = y_offset;
+    }
+
+    // =====================
+    // Selection Logic
+    // =====================
+    void select_next(int start, int direction) {
+        int i = start;
+
+        while (i >= 0 && i < count) {
+            if (strcmp(items[i].type, "item") == 0) {
+                selected_index = i;
+                return;
+            }
+            i += direction;
+        }
+    }
+};
 
 /*
 
