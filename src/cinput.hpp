@@ -187,7 +187,7 @@ private:
     // =====================
     // Layout Calculation
     // =====================
-    void recalc_layout() {
+    inline void recalc_layout() {
         int y_offset = 0;
 
         for (int i = 0; i < count; i++) {
@@ -213,7 +213,7 @@ private:
     // =====================
     // Selection Logic
     // =====================
-    void select_next(int start, int direction) {
+    inline void select_next(int start, int direction) {
         int i = start;
 
         while (i >= 0 && i < count) {
@@ -223,6 +223,12 @@ private:
             }
             i += direction;
         }
+    }
+    // other funcs
+
+    // ensure it's visible
+    inline void ensure_visible() {
+      if (selected_index < 0 || selected_index >= sizeof(items)){return 0}
     }
 };
 
